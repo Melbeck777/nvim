@@ -1,3 +1,5 @@
+vim.g.mapleader = "\\"
+vim.g.maplocalleader = "\\"
 --windows で :terminalをPowershellにする
 local opt = vim.opt
 if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
