@@ -32,18 +32,17 @@ opt.list = true
 opt.listchars = {tab = '>-', trail = '*', nbsp = '+'}
 
 opt.smartindent = true
-opt.visualbell
+opt.visualbell = true
 
 opt.showmatch = true
-
 
 opt.expandtab = true
 opt.tabstop = 4
 opt.shiftwidth = 4
 
-opt.ignorecase  = true
+opt.ignorecase = true
 opt.smartcase = true
-opt.wraspscan = true
+opt.wrapscan = true
 
 opt.whichwrap = 'b', 's', 'h', 'l', '<', '>', '[', ']'
 opt.backspace = 'start', 'eol', 'indent'
