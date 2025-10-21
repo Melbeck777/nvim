@@ -13,22 +13,36 @@ local function opts(extra)
   return vim.tbl_extend("force", { noremap = true, silent = true }, extra or {})
 end
 
+local Terminal = require("toggleterm.terminal").Terminal
+local function open_new_term(direction)
+    direction = direction or "float"
+  local term = Terminal:new({
+    direction = direction,
+    close_on_exit = true,
+  })
+  term:open()
+end
+
+
+
 -- Leader mappings
 map("n", "<leader>tt", function()
-  load_then("akinsho/toggleterm.nvim", function()
-    vim.cmd("ToggleTerm direction=float")
+  load_then("toggleterm.nvim", function()
+    open_new_term("float")            -- ← vim.cmd は不要
   end)
 end, opts({ desc = "Toggle terminal" }))
 
 map("n", "<leader>tv", function()
-  load_then("akinsho/toggleterm.nvim", function()
-    vim.cmd("ToggleTerm direction=vertical")
+  load_then("toggleterm.nvim", function()  -- ← repo ではなく "toggleterm.nvim"
+    open_new_term("vertical")            -- ← vim.cmd は不要
   end)
 end, opts({ desc = "Terminal Vertical" }))
+-- 例: keymap.lua
+-- load_then は「プラグイン名」で呼ぶ。vim.cmd は使わず関数を直接呼ぶ。
 
 map("n", "<leader>th", function()
-  load_then("akinsho/toggleterm.nvim", function()
-    vim.cmd("ToggleTerm direction=horizontal")
+  load_then("toggleterm.nvim", function()  -- ← repo ではなく "toggleterm.nvim"
+    open_new_term("horizontal")            -- ← vim.cmd は不要
   end)
 end, opts({ desc = "Terminal Horizontal" }))
 
