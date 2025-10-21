@@ -61,3 +61,5 @@ opt.updatetime = 300
 opt.showtabline = 2
 require("config.lazy")
 require("config.keymap")
+
+

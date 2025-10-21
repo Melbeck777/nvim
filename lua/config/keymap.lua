@@ -34,3 +34,19 @@ end, opts({ desc = "Terminal Horizontal" }))
 
 -- 端末バッファから抜ける
 map("t", "<esc>", [[<C-\><C-n>]], opts())
+
+-- LSP 共通（LspAttach でバッファローカルに張る）
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local bufnr = args.buf
+    local bmap = function(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = desc })
+    end
+    bmap("n", "gd", vim.lsp.buf.definition, "Goto Definition")
+    bmap("n", "gr", vim.lsp.buf.references, "References")
+    bmap("n", "K",  vim.lsp.buf.hover, "Hover")
+    bmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
+    bmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
+    bmap("n", "<leader>fd", function() vim.lsp.buf.format({ async = true }) end, "Format")
+  end,
+})
