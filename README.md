@@ -1,6 +1,7 @@
 # Nvim
 
 ## Strucutre of direcotry
+```
 │  init.lua <- Setting except keymap, load lazy.lua and kymap.lua
 │  README.md
 │  
@@ -17,6 +18,7 @@
             telescope.lua
             toggleterm.lua
             tokyonight.lua
+```
 
 ## plugins
 - lspconfig
@@ -26,4 +28,11 @@
 - toggleterm
 - tokyonight
 - autopairs
+
+## ToDo
+[ ] Imporve the view of nvim-tree
+[ ] Automatically added bullet points
+[ ] Checke the spell
+[ ] Fix to retuern normalmode when through terminal mode.
+ - this is problem of focus.
 
