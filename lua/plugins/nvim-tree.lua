@@ -6,7 +6,65 @@ return {
     disable_netrw = true,
     hijack_netrw = true,
     update_focused_file = { enable = true },
-    renderer = { highlight_git = true, group_empty = true },
+    -- 追記後（ツリーガイドと枝アイコンを有効化）
+    renderer = {
+      highlight_git = true,
+      group_empty = true,
+      indent_markers = {
+        enable = true,
+        inline_arrows = false, -- 矢印を縦線と同列にしない（好みで true/false）
+        icons = {
+          corner = "└",
+          edge   = "│",
+          item   = "├",
+          bottom = "─",
+          none   = " ",
+        },
+      },
+      icons = {
+        show = {
+          file = true,
+          folder = true,
+          folder_arrow = true,
+          git = true,
+        },
+        glyphs = {
+          default = "● ",
+          symlink = "↗ ",
+          folder = {
+            default = "▸ ",
+            open = "▾ ",
+            empty = "▸ ",
+            empty_open = "▾ ",
+            symlink = "↗ ",
+            symlink_open = "↘ ",
+            arrow_closed = "▸",
+            arrow_open = "▾"
+          },
+          git = {
+            unstaged = "!",
+            staged = "+",
+            unmerged = "",
+            renamed = "»",
+            untracked = "?",
+            deleted = "×",
+            ignored = "·",
+          },
+        },
+      },
+    },
+
+    diagnostics = {
+      enable = true,
+      show_on_dirs = true,
+      icons = { hint = "", info = "", warning = "", error = "" },
+    },
+    git = {
+      enable = true,
+      ignore = false,  -- .gitignore を非表示にしたくない場合
+      timeout = 400,
+    },
+    filesystem_watchers = { enable = true },
     filters = { dotfiles = false },
     view = { width = 35, side = "left" },
 
