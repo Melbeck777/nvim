@@ -18,6 +18,7 @@
             telescope.lua
             toggleterm.lua
             tokyonight.lua
+            comment.lua
 ```
 
 ## plugins
@@ -30,9 +31,8 @@
 - autopairs
 
 ## ToDo
-[ ] Imporve the view of nvim-tree
-[ ] Automatically added bullet points
+[x] Imporve the view of nvim-tree
+[x] Automatically added bullet points
 [ ] Checke the spell
 [ ] Fix to retuern normalmode when through terminal mode.
  - this is problem of focus.
-

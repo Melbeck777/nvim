@@ -64,3 +64,96 @@ vim.api.nvim_create_autocmd("LspAttach", {
     bmap("n", "<leader>fd", function() vim.lsp.buf.format({ async = true }) end, "Format")
   end,
 })
+local function bmap(bufnr, mode, lhs, rhs, opt)
+  opt = opt or {}
+  opt.buffer = bufnr
+  vim.keymap.set(mode, lhs, rhs, opt)
+end
+
+-- insertmode
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "i", "<CR>", "<CR><cmd>AutolistNewBullet<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "i", "<BS>", "<BS><cmd>AutolistBackspace<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "i", "<Tab>", "<cmd>AutolistTab<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "i", "<S-Tab>", "<cmd>AutolistShiftTab<CR>", { silent = true })
+  end,
+})
+
+-- normalmode
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "n", "<Tab>", "<cmd>AutolistTab<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "n", "<S-Tab>", "<cmd>AutolistShiftTab<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "n", "<gl>", "<cmd>AutolistToggleCheckBox<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "n", "<g>>", "<cmd>AutolistCycle<CR>", { silent = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "text", "norg"},
+  callback = function(args)
+    local bufnr = args.buf
+    bmap(bufnr, "n", "<gr>", "<cmd>AutolistRecalculate<CR>", { silent = true })
+  end,
+})
+
+-- もし nvim-autopairs を使っている場合（<CR> 競合対策）
+-- 連携例: autolist が処理すべきケースは autolist.new() を返し、
+-- それ以外は autopairs の CR を使う
+local ok_pairs, npairs = pcall(require, "nvim-autopairs")
+if ok_pairs and ok then
+  vim.keymap.set("i", "<CR>", function()
+    local res = autolist.new()
+    if res ~= "<CR>" then
+      return res
+    end
+    return npairs.autopairs_cr()
+  end, { expr = true, replace_keycodes = false, silent = true, desc = "Autolist + autopairs CR" })
+end
