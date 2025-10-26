@@ -1,7 +1,7 @@
 -- lua/plugins/autolist.lua
 return {
   "gaoDean/autolist.nvim",
-  ft = { "markdown", "text", "norg" },
+  ft = { "markdown", "text", "tex", "plaintex", "norg" },
   opts = {
     lists = {
       marker = { "-", "*", "+" },

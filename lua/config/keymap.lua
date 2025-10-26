@@ -124,7 +124,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "text", "norg"},
   callback = function(args)
     local bufnr = args.buf
-    bmap(bufnr, "n", "<gl>", "<cmd>AutolistToggleCheckBox<CR>", { silent = true })
+    bmap(bufnr, "n", "gl", "<cmd>AutolistToggleCheckbox<CR>", { silent = true })
   end,
 })
 
@@ -132,7 +132,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "text", "norg"},
   callback = function(args)
     local bufnr = args.buf
-    bmap(bufnr, "n", "<g>>", "<cmd>AutolistCycle<CR>", { silent = true })
+    bmap(bufnr, "n", "g>", "<cmd>AutolistCycle<CR>", { silent = true })
   end,
 })
 
@@ -140,7 +140,7 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "markdown", "text", "norg"},
   callback = function(args)
     local bufnr = args.buf
-    bmap(bufnr, "n", "<gr>", "<cmd>AutolistRecalculate<CR>", { silent = true })
+    bmap(bufnr, "n", "gr", "<cmd>AutolistRecalculate<CR>", { silent = true })
   end,
 })
 
