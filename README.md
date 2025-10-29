@@ -38,6 +38,7 @@
 - mason-lspconfig
 - nvim-cmp
 - cmp-nvim-lsp
+- diffview
 
 ## ToDo
 [x] Imporve the view of nvim-tree
