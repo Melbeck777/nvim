@@ -26,13 +26,22 @@
 - nvim-tree
 - nvim-treesitter
 - telescope
+    - If you want use 'live_grep' in windows you need to install ripgrep below command.
+    ```
+     winget install BurntSushi.ripgrep.MSVC
+    ```
 - toggleterm
 - tokyonight
 - autopairs
+- mason
+- nvim-lspconfig
+- mason-lspconfig
+- nvim-cmp
+- cmp-nvim-lsp
 
 ## ToDo
 [x] Imporve the view of nvim-tree
 [x] Automatically added bullet points
 [ ] Checke the spell
-[ ] Fix to retuern normalmode when through terminal mode.
- - this is problem of focus.
+[x] Fix to retuern normalmode when through terminal mode.
+   - It's solved chaneg focus command.
