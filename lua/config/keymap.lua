@@ -23,8 +23,6 @@ local function open_new_term(direction)
     term:open()
 end
 
-
-
 -- Leader mappings
 map("n", "<leader>tt", function()
     load_then("toggleterm.nvim", function()

@@ -53,8 +53,7 @@ opt.backspace = { "start", "eol", "indent" }
 -- カーソル移動キーで行をまたげるように
 opt.whichwrap = "b,s,h,l,<,>,[,]"
 -- クリップボード設定のスペルも修正（unnamedplus）
-vim.opt.clipboard:append({ unnamedplus = true })
-opt.fileformats = 'dos', 'unix', 'mac'
+opt.fileformats = { 'dos', 'unix', 'mac' }
 
 opt.helplang = 'ja', 'en'
 

@@ -24,9 +24,12 @@
 ## plugins
 - lspconfig
 - nvim-tree
+    - Download font from below.
+    - https://github.com/yumitsu/font-menlo-extra/blob/master/Menlo-Regular-Normal.ttf
 - nvim-treesitter
 - telescope
-    - If you want use 'live_grep' in windows you need to install ripgrep below command.
+    - If you use live\_grep in windows, you need to install ripgrep.
+    - You can install below command in PowerShell.
     ```
      winget install BurntSushi.ripgrep.MSVC
     ```
