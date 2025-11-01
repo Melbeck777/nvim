@@ -33,6 +33,7 @@ opt.hidden = true
 opt.clipboard:append({ unnamedplus = true })
 
 opt.number = true
+opt.relativenumber = true
 opt.list = true
 opt.listchars = { tab = '>-', trail = '*', nbsp = '+' }
 
