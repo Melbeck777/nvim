@@ -16,6 +16,7 @@ return {
                 markdown = { "prettier" },
                 yaml = { "prettier" },
                 python = { "ruff_format", "black" },
+                markdown = { "prettied", "prettier" },
                 go = { "gofumpt", "goimports" },
             },
         })
