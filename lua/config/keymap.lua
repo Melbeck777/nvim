@@ -24,13 +24,13 @@ local function open_new_term(direction)
 end
 
 -- Leader mappings
-map("n", "<leader>tt", function()
+map("n", "<Space>tt", function()
     load_then("toggleterm.nvim", function()
         open_new_term("float") -- ← vim.cmd は不要
     end)
 end, opts({ desc = "Toggle terminal" }))
 
-map("n", "<leader>tv", function()
+map("n", "<Space>tv", function()
     load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
         open_new_term("vertical")           -- ← vim.cmd は不要
     end)
@@ -38,7 +38,7 @@ end, opts({ desc = "Terminal Vertical" }))
 -- 例: keymap.lua
 -- load_then は「プラグイン名」で呼ぶ。vim.cmd は使わず関数を直接呼ぶ。
 
-map("n", "<leader>th", function()
+map("n", "<Space>th", function()
     load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
         open_new_term("horizontal")         -- ← vim.cmd は不要
     end)
@@ -48,10 +48,10 @@ end, opts({ desc = "Terminal Horizontal" }))
 map("t", "<esc>", [[<C-\><C-n>]], opts())
 
 -- diffの表示
-map("n", "<leader>gd", "<cmd>DiffviewOpen<cr>", opts({ desc = "Diffview: repo/index VS Head" }))
-map("n", "<leader>gD", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", opts({ desc = "Diffview: Head~1..HEAD" }))
-map("n", "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview: file history (%)" }))
-map("n", "<leader>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
+map("n", "<Space>gd", "<cmd>DiffviewOpen<cr>", opts({ desc = "Diffview: repo/index VS Head" }))
+map("n", "<Space>gD", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", opts({ desc = "Diffview: Head~1..HEAD" }))
+map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview: file history (%)" }))
+map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
 -- LSP 共通（LspAttach でバッファローカルに張る）
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
@@ -62,9 +62,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
         bmap("n", "gd", vim.lsp.buf.definition, "Goto Definition")
         bmap("n", "gr", vim.lsp.buf.references, "References")
         bmap("n", "K", vim.lsp.buf.hover, "Hover")
-        bmap("n", "<leader>rn", vim.lsp.buf.rename, "Rename")
-        bmap("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
-        bmap("n", "<leader>fd", function() vim.lsp.buf.format({ async = true }) end, "Format")
+        bmap("n", "<Space>rn", vim.lsp.buf.rename, "Rename")
+        bmap("n", "<Space>ca", vim.lsp.buf.code_action, "Code Action")
+        bmap("n", "<Space>fd", function() vim.lsp.buf.format({ async = true }) end, "Format")
     end,
 })
 local function bmap(bufnr, mode, lhs, rhs, opt)
