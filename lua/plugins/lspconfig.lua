@@ -45,8 +45,8 @@ return {
             })
 
             -- 旧 lspconfig の“設定定義”は参照だけに使う（root_dir などの既定取得）
-            local ok_lsp, _ = pcall(require, "lspconfig")
-            if not ok_lsp then return end
+            --local ok_lsp, _ = pcall(require, "lspconfig")
+            --if not ok_lsp then return end
 
             -- capabilities（nvim-cmp 連携）
             local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -107,6 +107,13 @@ return {
 
                 vim.lsp.start(cfg)
             end
+
+            -- mason-lspconfig のハンドラで一括起動
+            mlsp.setup({
+                function(server_name)
+                    start(server_name, servers[server_name])
+                end,
+            })
 
             -- 診断表示の調整
             vim.diagnostic.config({
