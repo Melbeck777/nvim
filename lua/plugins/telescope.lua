@@ -20,9 +20,29 @@ return {
                     ["<C-k>"] = "move_selection_previous",
                 },
             },
+            file_ignore_patterns = {
+                "[/\\]%.git[/\\]",
+                -- よくあるビルド・巨大ディレクトリ
+                "[/\\]node_modules[/\\]",
+                "[/\\]dist[/\\]",
+                "[/\\]build[/\\]",
+                "[/\\]%.venv[/\\]", "[/\\]venv[/\\]",
+                "[/\\]coverage[/\\]", "[/\\]target[/\\]",
+                -- バイナリや画像拡張子（末尾一致）
+                "%.png$", "%.jpg$", "%.jpeg$", "%.gif$", "%.webp$", "%.mp4$", "%.mov$",
+                -- ロックファイル
+                "yarn%.lock$", "pnpm%-lock%.yaml$",
+            },
         },
         pickers = {
-            find_files = { hidden = true },
+            find_files = {
+                hidden = true,
+                no_ignore = false,
+                --find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" }
+            },
+            live_grep = {
+
+            }
         },
     },
     keys = {
@@ -30,6 +50,7 @@ return {
         { "<Space>fg", function() require("telescope.builtin").live_grep() end,  desc = "Live grep" },
         { "<Space>fb", function() require("telescope.builtin").buffers() end,    desc = "Buffers" },
         { "<Space>fh", function() require("telescope.builtin").help_tags() end,  desc = "Help tags" },
+        { "<Space>fo", function() require("telescope.builtin").git_files() end,  desc = "Git files" },
     },
     config = function(_, opts)
         local telescope = require("telescope")

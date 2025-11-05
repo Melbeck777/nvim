@@ -47,11 +47,17 @@ end, opts({ desc = "Terminal Horizontal" }))
 -- 端末バッファから抜ける
 map("t", "<esc>", [[<C-\><C-n>]], opts())
 
+-- git setting
+map("n", "<leader>g", ":LazyGit<CR>", opts())
+
+
 -- diffの表示
 map("n", "<Space>gd", "<cmd>DiffviewOpen<cr>", opts({ desc = "Diffview: repo/index VS Head" }))
 map("n", "<Space>gD", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", opts({ desc = "Diffview: Head~1..HEAD" }))
 map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview: file history (%)" }))
 map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
+
+
 -- LSP 共通（LspAttach でバッファローカルに張る）
 vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
