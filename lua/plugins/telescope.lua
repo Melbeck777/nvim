@@ -41,7 +41,26 @@ return {
                 --find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" }
             },
             live_grep = {
-
+                additional_args = function(_)
+                    local args = {
+                        "-F",
+                        "-S",
+                        "--hidden",
+                        "--glob", "!**/.git/*",
+                    }
+                    return args
+                end,
+            },
+            grep_string = {
+                additional_args = function(_)
+                    local args = {
+                        "-P",
+                        "-S",
+                        "--hidden",
+                        "--glob", "!**/.git/*",
+                    }
+                    return args
+                end,
             }
         },
     },
@@ -51,6 +70,18 @@ return {
         { "<Space>fb", function() require("telescope.builtin").buffers() end,    desc = "Buffers" },
         { "<Space>fh", function() require("telescope.builtin").help_tags() end,  desc = "Help tags" },
         { "<Space>fo", function() require("telescope.builtin").git_files() end,  desc = "Git files" },
+        {
+            "<Space>fG",
+            function()
+                local builtin = require("telescope.builtin")
+                builtin.live_grep({
+                    additional_args = function(_)
+                        return { "-P", "-S", "--hidden", "--glob", "!**/.git/*" }
+                    end,
+                })
+            end,
+            desc = "Live grep (PCRE2 regex JP)"
+        },
     },
     config = function(_, opts)
         local telescope = require("telescope")
