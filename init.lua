@@ -67,10 +67,6 @@ opt.grepprg = 'findstr /S /N /R /I /C:%s .'
 opt.pumblend = 10
 opt.winblend = 10
 
---境界分割
-opt.fillchars:append({ vert = "|" })
---vim.api.nvim_set_h1(0, "WinSeparator", { fg = "#3b4261", bg = "#1a1b26" })
---vim.api.nvim_set_h1(0, "VerSPlit", { fg = "#3b4261", bg = "#1a1b26" })
 opt.laststatus = 3
 --vim.nvim_open_win(bufnr(''), v:false, {'relative': 'cursor', 'height': 3, 'width': 10, 'row': 1, 'col': 1})
 -- quickfix への取り込み形式: file:line:message
