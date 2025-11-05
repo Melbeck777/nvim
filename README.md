@@ -35,6 +35,7 @@
     ```
 - toggleterm
 - tokyonight
+    - You need to install 
 - autopairs
 - mason
 - nvim-lspconfig
@@ -44,10 +45,17 @@
 - diffview
 
 ## ToDo
-[x] Imporve the view of nvim-tree
-[x] Automatically added bullet points
-[ ] Checke the spell
-[x] Fix to retuern normalmode when through terminal mode.
-   - It's solved chaneg focus command.
-[ ] Add code suggest in insert mode.
-[ ] Code format some files.(python, go, c++, js, java)
+- [x] Imporve the view of nvim-tree
+- [x] Automatically added bullet points
+- [ ] Checke the spell
+- [x] Fix to retuern normalmode when through terminal mode.
+-    - It's solved chaneg focus command.
+- [ ] Add code suggest in insert mode.
+- [ ] Code format some files.(python, go, c++, js, java)
+- [ ] Set floating window transparent.
+- [ ] Complete the git setting.
+    - [ ] Set the commit comment wirtten by vim.
+    - [ ] Install some plugins.
+- [ ] Set the ddc.
+    - [ ] get formatter of markdown
+- [ ] Setting lazygit.
