@@ -72,5 +72,10 @@ opt.laststatus = 3
 -- quickfix への取り込み形式: file:line:message
 opt.grepformat = '%f:%l:%m'
 opt.showtabline = 2
+
+local termfeatures = vim.g.termfeatures or {}
+termfeatures.osc52 = false
+vim.g.termfeatures = termfeatures
+
 require("config.lazy")
 require("config.keymap")
