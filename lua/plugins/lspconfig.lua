@@ -71,6 +71,14 @@ return {
                         },
                     },
                 },
+                clangd = {
+                    cmd = {
+                        "clangd",
+                        "--background-index",
+                        "--clang-tidy",
+                        "--query-driver=C:/Users/molmi/pg/mingw64/bin/g++.exe",
+                    },
+                },
                 ts_ls = {},
                 jsonls = {},
                 html = {},
