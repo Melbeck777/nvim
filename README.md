@@ -50,6 +50,7 @@
 - [ ] Checke the spell
 - [x] Fix to retuern normalmode when through terminal mode.
 -    - It's solved chaneg focus command.
+    ![transplant](assets/transplant.png)
 - [ ] Add code suggest in insert mode.
 - [ ] Code format some files.(python, go, c++, js, java)
 - [ ] Set floating window transparent.
