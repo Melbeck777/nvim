@@ -14,11 +14,25 @@ return {
         -- 浮動ウィンドウ関連
         vim.g.lazygit_floating_window_winblend = 10         -- 透明度
         vim.g.lazygit_floating_window_scaling_factor = 0.95 -- 画面に対する比率
-        vim.g.lazygit_floating_window_use_plenary = 0       -- 0: NeovimのAPIで描画
+        --vim.g.lazygit_floating_window_use_plenary = 0       -- 0: NeovimのAPIで描画
         -- 例: lua/plugins/lazygit.lua の init または config で
+        --vim.g.lazygit_floating_window_border_chars = { "┌", "─", "┐", "│", "┘", "─", "└", "│" }
+        -- まずは残像抑制の最小変更
+        vim.g.lazygit_floating_window_winblend = 0
         vim.g.lazygit_floating_window_border_chars = { "+", "-", "+", "|", "+", "-", "+", "|" }
 
-        --vim.g.lazygit_floating_window_border_chars = { "┌", "─", "┐", "│", "┘", "─", "└", "│" }
+        -- これでも残る場合は切り替えて比較
+        vim.g.lazygit_floating_window_use_plenary = 1
+
+        -- 閉じ時の強制再描画
+        vim.api.nvim_create_autocmd("TermClose", {
+            pattern = "*lazygit*",
+            callback = function()
+                vim.cmd("silent! checktime")
+                vim.cmd("mode") -- 入力モード確定で再描画が走る場合あり
+                vim.cmd("redraw!")
+            end,
+        })
         -- Neovim からファイルを開き直す
         vim.g.lazygit_use_neovim_remote = 1
 
