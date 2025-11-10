@@ -80,8 +80,8 @@ return {
     },
 
     keys = {
-        { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "NvimTree Toggle" },
-        { "<leader>o", "<cmd>NvimTreeFocus<cr>",  desc = "NvimTree Focus" },
+        { "<Space>e", "<cmd>NvimTreeToggle<cr>", desc = "NvimTree Toggle" },
+        { "<Space>o", "<cmd>NvimTreeFocus<cr>",  desc = "NvimTree Focus" },
     },
 
     config = function(_, opts)
