@@ -30,7 +30,7 @@ opt.ambiwidth = 'double'
 opt.swapfile = false
 opt.backup = false
 opt.hidden = true
-opt.clipboard:append({ unnamedplus = true })
+opt.clipboard:append({ "unnamedplus" })
 
 opt.number = true
 opt.relativenumber = true
@@ -56,7 +56,7 @@ opt.whichwrap = "b,s,h,l,<,>,[,]"
 -- クリップボード設定のスペルも修正（unnamedplus）
 opt.fileformats = { 'dos', 'unix', 'mac' }
 
-opt.helplang = 'ja', 'en'
+opt.helplang = { 'ja', 'en' }
 
 opt.updatetime = 300
 -- :grep が使う外部コマンドを findstr に
@@ -73,6 +73,8 @@ opt.laststatus = 3
 opt.grepformat = '%f:%l:%m'
 opt.showtabline = 2
 
+
+-- フォーカスを変更する
 local termfeatures = vim.g.termfeatures or {}
 termfeatures.osc52 = false
 vim.g.termfeatures = termfeatures
