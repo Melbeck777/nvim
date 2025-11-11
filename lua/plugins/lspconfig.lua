@@ -3,8 +3,6 @@ return {
     { "williamboman/mason.nvim",          build = ":MasonUpdate" },
     { "neovim/nvim-lspconfig" },
     { "williamboman/mason-lspconfig.nvim" },
-    { "hrsh7th/cmp-nvim-lsp" },
-
     {
         "nvim-lua/plenary.nvim",
         event = "VeryLazy",
@@ -48,12 +46,6 @@ return {
             --local ok_lsp, _ = pcall(require, "lspconfig")
             --if not ok_lsp then return end
 
-            -- capabilities（nvim-cmp 連携）
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-            if ok_cmp then
-                capabilities = cmp_lsp.default_capabilities(capabilities)
-            end
 
             -- on_attach（キーマップは貼らない）
             local on_attach = function(client, bufnr)
