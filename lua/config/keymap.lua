@@ -1,6 +1,6 @@
 -- lua/config/keymap.lua
 local map = vim.keymap.set
-
+local api = vim.api.nvim_create_autocmd
 local function load_then(names, fn)
     local list = type(names) == "string" and { names } or names
     pcall(function()
@@ -58,21 +58,25 @@ map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview:
 map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
 
 
--- LSP 共通（LspAttach でバッファローカルに張る）
-vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-        local bufnr = args.buf
-        local bmap = function(mode, lhs, rhs, desc)
-            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = desc })
-        end
-        bmap("n", "gd", vim.lsp.buf.definition, "Goto Definition")
-        bmap("n", "gr", vim.lsp.buf.references, "References")
-        bmap("n", "K", vim.lsp.buf.hover, "Hover")
-        bmap("n", "<Space>rn", vim.lsp.buf.rename, "Rename")
-        bmap("n", "<Space>ca", vim.lsp.buf.code_action, "Code Action")
-        bmap("n", "<Space>fd", function() vim.lsp.buf.format({ async = true }) end, "Format")
-    end,
-})
+map("n", "gD", vim.lsp.buf.declaration, opts({ buffer = true }))
+map("n", "gd", vim.lsp.buf.definition, opts({ buffer = true }))
+map("n", "K", vim.lsp.buf.hover, opts({ buffer = true }))
+map("n", "gi", vim.lsp.buf.implementation, opts({ buffer = true }))
+map("n", "<C-k>", vim.lsp.buf.signature_help, opts({ buffer = true }))
+map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts({ buffer = true }))
+map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts({ buffer = true }))
+map("n", "<leader>wl", function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+end, opts({ buffer = true }))
+map("n", "<leader>D", vim.lsp.buf.type_definition, opts({ buffer = true }))
+map("n", "<leader>rn", vim.lsp.buf.rename, opts({ buffer = true }))
+map("n", "<leader>ca", vim.lsp.buf.code_action, opts({ buffer = true }))
+map("n", "gr", vim.lsp.buf.references, opts({ buffer = true }))
+map("n", "<leader>e", vim.diagnostic.open_float, opts({ buffer = true }))
+map("n", "[d", vim.diagnostic.goto_prev, opts({ buffer = true }))
+map("n", "]d", vim.diagnostic.goto_next, opts({ buffer = true }))
+map("n", "<leader>q", vim.diagnostic.setloclist, opts({ buffer = true }))
+
 local function bmap(bufnr, mode, lhs, rhs, opt)
     opt = opt or {}
     opt.buffer = bufnr
@@ -80,7 +84,7 @@ local function bmap(bufnr, mode, lhs, rhs, opt)
 end
 
 -- insertmode
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -88,7 +92,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -96,7 +100,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -104,7 +108,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -113,7 +117,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- normalmode
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -121,7 +125,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -129,7 +133,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -137,7 +141,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
@@ -145,7 +149,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
+api("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
         local bufnr = args.buf
