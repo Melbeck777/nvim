@@ -79,7 +79,7 @@ local function bmap(bufnr, mode, lhs, rhs, opt)
     vim.keymap.set(mode, lhs, rhs, opt)
 end
 
--- insertmode
+-- Autolist
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "markdown", "text", "norg" },
     callback = function(args)
@@ -153,10 +153,20 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+local builtin = require("telescope.builtin")
+local tcfg = require("config.telescope")
 
--- もし nvim-autopairs を使っている場合（<CR> 競合対策）
--- 連携例: autolist が処理すべきケースは autolist.new() を返し、
--- それ以外は autopairs の CR を使う
+map("n", "<Space>ff", function() builtin.find_files() end, opts({ desc = "Find files" }))
+map("n", "<Space>fg", function()
+    builtin.live_grep({
+        additional_args = function(_) return tcfg.rg_args_flat({ pcre = true }) end,
+    })
+end, opts({ desc = "Live grep" }))
+map("n", "<Space>fb", function() builtin.buffers() end, opts({ desc = "Buffers" }))
+map("n", "<Space>fh", function() builtin.help_tags() end, opts({ desc = "Help tags" }))
+map("n", "<Space>fo", function() builtin.git_files() end, opts({ desc = "Git files" }))
+
+
 local ok_pairs, npairs = pcall(require, "nvim-autopairs")
 if ok_pairs and ok then
     vim.keymap.set("i", "<CR>", function()
