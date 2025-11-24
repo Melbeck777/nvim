@@ -7,20 +7,20 @@ return {
         dependencies = {
             "vim-denops/denops.vim",
             "Shougo/ddc-ui-native",
+            "uga-rosa/ddc-previewer-floating",
 
             -- sources
             "Shougo/ddc-source-lsp",
             "Shougo/ddc-source-around",
             "LumaKernel/ddc-source-file",
 
-            -- cmdline（必要なら）
+            --cmd
             "Shougo/ddc-source-cmdline",
-            --"Shougo/ddc-source-cmdline-history",
+            "Shougo/ddc-source-cmdline_history",
 
             -- filters
-            "Shougo/ddc-filter-matcher_head",
-            "Shougo/ddc-filter-sorter_rank",
-            --"Shougo/ddc-filter-converter_case", -- ← 使うなら追加
+            "Shougo/ddc-rg",
+            "tani/ddc-fuzzy",
 
             -- snippet
             "L3MON4D3/LuaSnip",
@@ -32,8 +32,6 @@ return {
         },
         config = function()
             require("luasnip.loaders.from_vscode").lazy_load()
-            --require("ddc_nvim_lsp_setup").setup() -- ← これが通るようになる
-            -- 失敗しても落とさない
             pcall(function() require("ddc_nvim_lsp_setup").setup() end)
             require("config.ddc").setup()
         end,

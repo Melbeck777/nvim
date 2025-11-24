@@ -26,21 +26,19 @@ end
 -- Leader mappings
 map("n", "<Space>tt", function()
     load_then("toggleterm.nvim", function()
-        open_new_term("float") -- ← vim.cmd は不要
+        open_new_term("float")
     end)
 end, opts({ desc = "Toggle terminal" }))
 
 map("n", "<Space>tv", function()
-    load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
-        open_new_term("vertical")           -- ← vim.cmd は不要
+    load_then("toggleterm.nvim", function()
+        open_new_term("vertical")
     end)
 end, opts({ desc = "Terminal Vertical" }))
--- 例: keymap.lua
--- load_then は「プラグイン名」で呼ぶ。vim.cmd は使わず関数を直接呼ぶ。
 
 map("n", "<Space>th", function()
-    load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
-        open_new_term("horizontal")         -- ← vim.cmd は不要
+    load_then("toggleterm.nvim", function()
+        open_new_term("horizontal")
     end)
 end, opts({ desc = "Terminal Horizontal" }))
 
@@ -80,7 +78,7 @@ map("n", "<leader>q", vim.diagnostic.setloclist, opts({ buffer = true }))
 local function bmap(bufnr, mode, lhs, rhs, opt)
     opt = opt or {}
     opt.buffer = bufnr
-    vim.keymap.set(mode, lhs, rhs, opt)
+    map.set(mode, lhs, rhs, opt)
 end
 
 -- insertmode
@@ -157,13 +155,46 @@ api("FileType", {
     end,
 })
 
+local fn = vim.fn
+-- 直前が空白（または行頭）かどうか
+local function has_words_before()
+    local line, col = unpack(api.nvim_win_get_cursor(0))
+    if col == 0 then return true end
+    local c = api.nvim_get_current_line():sub(col, col)
+    return c:match("%s") ~= nil
+end
 
--- もし nvim-autopairs を使っている場合（<CR> 競合対策）
--- 連携例: autolist が処理すべきケースは autolist.new() を返し、
--- それ以外は autopairs の CR を使う
+-- <Tab>: 補完メニュー表示中なら次候補、直前が空白/行頭ならタブ、それ以外は ddc の手動補完
+map("i", "<Tab>", function()
+    if fn.pumvisible() == 1 then
+        return "<C-n>"
+    elseif has_words_before() then
+        return "<Tab>"
+    else
+        return fn["ddc#map#manual_complete"]()
+    end
+end, { expr = true, silent = true })
+
+-- <S-Tab>: 補完メニュー表示中なら前候補、そうでなければバックスペース相当
+map("i", "<S-Tab>", function()
+    if fn.pumvisible() == 1 then
+        return "<C-p>"
+    else
+        return "<C-h>"
+    end
+end, { expr = true, silent = true })
+
+map("i", "<CR>", function()
+    if fn["ddc#visible"]() == true then
+        return fn["ddc#map#confirm"]
+    else
+        return "\r"
+    end
+end, { expr = true, silent = true })
+-- autopairs
 local ok_pairs, npairs = pcall(require, "nvim-autopairs")
 if ok_pairs and ok then
-    vim.keymap.set("i", "<CR>", function()
+    map.set("i", "<CR>", function()
         local res = autolist.new()
         if res ~= "<CR>" then
             return res
