@@ -13,7 +13,6 @@ return {
                 json = { "prettier" },
                 css = { "prettier" },
                 html = { "prettier" },
-                markdown = { "prettier" },
                 yaml = { "prettier" },
                 python = { "ruff_format", "black" },
                 markdown = { "prettied", "prettier" },

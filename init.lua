@@ -63,6 +63,7 @@ opt.updatetime = 300
 -- /S 再帰, /N 行番号, /R 正規表現, /I 大文字小文字無視（必要に応じて外す）
 -- /C:%s はパターン全体を1語として渡す（空白を含む検索に必須）
 opt.grepprg = 'findstr /S /N /R /I /C:%s .'
+opt.grepformat = '%f:%l:%m'
 
 opt.pumblend = 10
 opt.winblend = 10
@@ -70,7 +71,6 @@ opt.winblend = 10
 opt.laststatus = 3
 --vim.nvim_open_win(bufnr(''), v:false, {'relative': 'cursor', 'height': 3, 'width': 10, 'row': 1, 'col': 1})
 -- quickfix への取り込み形式: file:line:message
-opt.grepformat = '%f:%l:%m'
 opt.showtabline = 2
 
 
