@@ -1,47 +1,47 @@
 -- lua/config/keymap.lua
 local map = vim.keymap.set
-
+local api = vim.api.nvim_create_autocmd
 local function load_then(names, fn)
-    local list = type(names) == "string" and { names } or names
-    pcall(function()
-        require("lazy").load({ plugins = list })
-    end)
-    if fn then fn() end -- ← これが必要
+	local list = type(names) == "string" and { names } or names
+	pcall(function()
+		require("lazy").load({ plugins = list })
+	end)
+	if fn then
+		fn()
+	end -- ← これが必要
 end
 
 local function opts(extra)
-    return vim.tbl_extend("force", { noremap = true, silent = true }, extra or {})
+	return vim.tbl_extend("force", { noremap = true, silent = true }, extra or {})
 end
 
 local Terminal = require("toggleterm.terminal").Terminal
 local function open_new_term(direction)
-    direction = direction or "float"
-    local term = Terminal:new({
-        direction = direction,
-        close_on_exit = true,
-    })
-    term:open()
+	direction = direction or "float"
+	local term = Terminal:new({
+		direction = direction,
+		close_on_exit = true,
+	})
+	term:open()
 end
 
 -- Leader mappings
 map("n", "<Space>tt", function()
-    load_then("toggleterm.nvim", function()
-        open_new_term("float") -- ← vim.cmd は不要
-    end)
+	load_then("toggleterm.nvim", function()
+		open_new_term("float") -- ← vim.cmd は不要
+	end)
 end, opts({ desc = "Toggle terminal" }))
 
 map("n", "<Space>tv", function()
-    load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
-        open_new_term("vertical")           -- ← vim.cmd は不要
-    end)
+	load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
+		open_new_term("vertical") -- ← vim.cmd は不要
+	end)
 end, opts({ desc = "Terminal Vertical" }))
--- 例: keymap.lua
--- load_then は「プラグイン名」で呼ぶ。vim.cmd は使わず関数を直接呼ぶ。
 
 map("n", "<Space>th", function()
-    load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
-        open_new_term("horizontal")         -- ← vim.cmd は不要
-    end)
+	load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
+		open_new_term("horizontal") -- ← vim.cmd は不要
+	end)
 end, opts({ desc = "Terminal Horizontal" }))
 
 -- 端末バッファから抜ける
@@ -50,130 +50,142 @@ map("t", "<esc>", [[<C-\><C-n>]], opts())
 -- git setting
 map("n", "<leader>g", ":LazyGit<CR>", opts())
 
-
 -- diffの表示
 map("n", "<Space>gd", "<cmd>DiffviewOpen<cr>", opts({ desc = "Diffview: repo/index VS Head" }))
 map("n", "<Space>gD", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", opts({ desc = "Diffview: Head~1..HEAD" }))
 map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview: file history (%)" }))
 map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
 
-
 -- LSP 共通（LspAttach でバッファローカルに張る）
-vim.api.nvim_create_autocmd("LspAttach", {
-    callback = function(args)
-        local bufnr = args.buf
-        local bmap = function(mode, lhs, rhs, desc)
-            vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = desc })
-        end
-        bmap("n", "gd", vim.lsp.buf.definition, "Goto Definition")
-        bmap("n", "gr", vim.lsp.buf.references, "References")
-        bmap("n", "K", vim.lsp.buf.hover, "Hover")
-        bmap("n", "<Space>rn", vim.lsp.buf.rename, "Rename")
-        bmap("n", "<Space>ca", vim.lsp.buf.code_action, "Code Action")
-        bmap("n", "<Space>fd", function() vim.lsp.buf.format({ async = true }) end, "Format")
-    end,
+api("LspAttach", {
+	callback = function(args)
+		local bufnr = args.buf
+		local bmap = function(mode, lhs, rhs, desc)
+			map(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = desc })
+		end
+		bmap("n", "gd", vim.lsp.buf.definition, "Goto Definition")
+		bmap("n", "gr", vim.lsp.buf.references, "References")
+		bmap("n", "K", vim.lsp.buf.hover, "Hover")
+		bmap("n", "<Space>rn", vim.lsp.buf.rename, "Rename")
+		bmap("n", "<Space>ca", vim.lsp.buf.code_action, "Code Action")
+		bmap("n", "<Space>fd", function()
+			vim.lsp.buf.format({ async = true })
+		end, "Format")
+	end,
 })
 local function bmap(bufnr, mode, lhs, rhs, opt)
-    opt = opt or {}
-    opt.buffer = bufnr
-    vim.keymap.set(mode, lhs, rhs, opt)
+	opt = opt or {}
+	opt.buffer = bufnr
+	map(mode, lhs, rhs, opt)
 end
 
 -- Autolist
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "i", "<CR>", "<CR><cmd>AutolistNewBullet<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "i", "<CR>", "<CR><cmd>AutolistNewBullet<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "i", "<BS>", "<BS><cmd>AutolistBackspace<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "i", "<BS>", "<BS><cmd>AutolistBackspace<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "i", "<Tab>", "<cmd>AutolistTab<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "i", "<Tab>", "<cmd>AutolistTab<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "i", "<S-Tab>", "<cmd>AutolistShiftTab<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "i", "<S-Tab>", "<cmd>AutolistShiftTab<CR>", { silent = true })
+	end,
 })
 
 -- normalmode
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "n", "<Tab>", "<cmd>AutolistTab<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "n", "<Tab>", "<cmd>AutolistTab<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "n", "<S-Tab>", "<cmd>AutolistShiftTab<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "n", "<S-Tab>", "<cmd>AutolistShiftTab<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "n", "gl", "<cmd>AutolistToggleCheckbox<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "n", "gl", "<cmd>AutolistToggleCheckbox<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "n", "g>", "<cmd>AutolistCycle<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "n", "g>", "<cmd>AutolistCycle<CR>", { silent = true })
+	end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "text", "norg" },
-    callback = function(args)
-        local bufnr = args.buf
-        bmap(bufnr, "n", "gr", "<cmd>AutolistRecalculate<CR>", { silent = true })
-    end,
+api("FileType", {
+	pattern = { "markdown", "text", "norg" },
+	callback = function(args)
+		local bufnr = args.buf
+		bmap(bufnr, "n", "gr", "<cmd>AutolistRecalculate<CR>", { silent = true })
+	end,
 })
 
 local builtin = require("telescope.builtin")
 local tcfg = require("config.telescope")
 
-map("n", "<Space>ff", function() builtin.find_files() end, opts({ desc = "Find files" }))
+map("n", "<Space>ff", function()
+	builtin.find_files()
+end, opts({ desc = "Find files" }))
 map("n", "<Space>fg", function()
-    builtin.live_grep({
-        additional_args = function(_) return tcfg.rg_args_flat({ pcre = true }) end,
-    })
+	builtin.live_grep({
+		additional_args = function(_)
+			return tcfg.rg_args_flat({ pcre = true })
+		end,
+	})
 end, opts({ desc = "Live grep" }))
-map("n", "<Space>fb", function() builtin.buffers() end, opts({ desc = "Buffers" }))
-map("n", "<Space>fh", function() builtin.help_tags() end, opts({ desc = "Help tags" }))
-map("n", "<Space>fo", function() builtin.git_files() end, opts({ desc = "Git files" }))
-
+map("n", "<Space>fb", function()
+	builtin.buffers()
+end, opts({ desc = "Buffers" }))
+map("n", "<Space>fh", function()
+	builtin.help_tags()
+end, opts({ desc = "Help tags" }))
+map("n", "<Space>fo", function()
+	builtin.git_files()
+end, opts({ desc = "Git files" }))
 
 local ok_pairs, npairs = pcall(require, "nvim-autopairs")
 if ok_pairs and ok then
-    vim.keymap.set("i", "<CR>", function()
-        local res = autolist.new()
-        if res ~= "<CR>" then
-            return res
-        end
-        return npairs.autopairs_cr()
-    end, { expr = true, replace_keycodes = false, silent = true, desc = "Autolist + autopairs CR" })
+	map("i", "<CR>", function()
+		local res = autolist.new()
+		if res ~= "<CR>" then
+			return res
+		end
+		return npairs.autopairs_cr()
+	end, { expr = true, replace_keycodes = false, silent = true, desc = "Autolist + autopairs CR" })
 end
+
+-- find-cmdline
+vim.api.nvim_set_keymap("n", ":", "<cmd>FineCmdline<CR>", opts())
