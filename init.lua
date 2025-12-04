@@ -7,8 +7,8 @@ local opt = vim.opt
 if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
 	local pwsh = vim.fn.executable("pwsh") == 1 and "pwsh" or nil
 	local pscore = vim.fn.executable("powershell") == 1 and "powershell"
-	local shell = pscore or pwsh
-
+	local shell = pwsh
+	print(shell)
 	if shell then
 		opt.shell = shell
 		opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
