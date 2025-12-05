@@ -8,7 +8,6 @@ if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
 	local pwsh = vim.fn.executable("pwsh") == 1 and "pwsh" or nil
 	local pscore = vim.fn.executable("powershell") == 1 and "powershell"
 	local shell = pwsh
-	print(shell)
 	if shell then
 		opt.shell = shell
 		opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
@@ -58,9 +57,6 @@ opt.fileformats = { "dos", "unix", "mac" }
 opt.helplang = { "ja", "en" }
 
 opt.updatetime = 300
--- :grep が使う外部コマンドを findstr に
--- /S 再帰, /N 行番号, /R 正規表現, /I 大文字小文字無視（必要に応じて外す）
--- /C:%s はパターン全体を1語として渡す（空白を含む検索に必須）
 opt.grepprg = "findstr /S /N /R /I /C:%s ."
 opt.grepformat = "%f:%l:%m"
 
@@ -68,7 +64,6 @@ opt.pumblend = 0
 opt.winblend = 0
 
 opt.laststatus = 3
---vim.nvim_open_win(bufnr(''), v:false, {'relative': 'cursor', 'height': 3, 'width': 10, 'row': 1, 'col': 1})
 -- quickfix への取り込み形式: file:line:message
 opt.showtabline = 2
 

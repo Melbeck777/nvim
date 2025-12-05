@@ -44,6 +44,11 @@ map("n", "<Space>th", function()
 	end)
 end, opts({ desc = "Terminal Horizontal" }))
 
+-- Move buffer
+map("n", "<C-j>", "<C-w>j", opts())
+map("n", "<C-h>", "<C-w>h", opts())
+map("n", "<C-l>", "<C-w>l", opts())
+map("n", "<C-k>", "<C-w>k", opts())
 -- 端末バッファから抜ける
 map("t", "<esc>", [[<C-\><C-n>]], opts())
 
