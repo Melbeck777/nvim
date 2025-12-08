@@ -8,7 +8,7 @@ return {
 			popup = {
 				border = {
 					style = "rounded",
-					text = { top = " Cmdline ", top_align = "left" }, -- ここは自由。全角でもOK
+					text = { top = " Cmdline ", top_align = "left" },
 				},
 				win_options = {
 					winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
