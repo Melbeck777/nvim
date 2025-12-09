@@ -20,4 +20,12 @@ require("lazy").setup({
 	},
 	install = { colorscheme = { "habmax" } },
 	checker = { enablede = true },
+	performance = {
+		rtp = {
+			import = "plugins",
+			disabled_plugins = {
+				"nvim-tree.lua",
+			},
+		},
+	},
 })
