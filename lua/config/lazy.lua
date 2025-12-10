@@ -24,7 +24,7 @@ require("lazy").setup({
 		rtp = {
 			import = "plugins",
 			disabled_plugins = {
-				"nvim-tree.lua",
+				"nvim-tree",
 			},
 		},
 	},
