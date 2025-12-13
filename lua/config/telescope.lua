@@ -17,7 +17,7 @@ local ignore_exts = { "png", "jpg", "jpeg", "gif", "webp", "mp4", "mov" }
 
 -- ripgrep に渡す --glob 除外
 local function rg_globs()
-	local args = { "--glob", "!**/.git/*" } -- まず .git を確実に除外
+	local args = { "--glob", "!**/.git/*" }
 	for _, d in ipairs(ignore_dirs) do
 		table.insert(args, "--glob")
 		table.insert(args, "!" .. "**/" .. d .. "**")
@@ -69,7 +69,6 @@ function M.rg_args_flat(opts)
 	if vim.fn.executable("rg") == 1 then
 		vim.list_extend(base, rg_globs())
 	else
-		-- rg がない場合は最低限 .git だけ除外
 		vim.list_extend(base, { "--glob", "!**/.git/*" })
 	end
 	if opts.max_columns then
