@@ -62,7 +62,6 @@ local function make_find_command()
 	return nil
 end
 
--- 公開: live_grep / grep_string 用の追加引数（keymap からも使える）
 function M.rg_args_flat(opts)
 	opts = opts or {}
 	local base = opts.pcre and { "-P", "-S", "--hidden" } or { "-F", "-S", "--hidden" }

@@ -170,6 +170,28 @@ local function has_words_before()
 	local c = api.nvim_get_current_line():sub(col, col)
 	return c:match("%s") ~= nil
 end
+local builtin = require("telescope.builtin")
+local tcfg = require("config.telescope")
+
+map("n", "<Space>ff", function()
+	builtin.find_files()
+end, opts({ desc = "Find files" }))
+map("n", "<Space>fg", function()
+	builtin.live_grep({
+		additional_args = function(_)
+			return tcfg.rg_args_flat({ pcre = true })
+		end,
+	})
+end, opts({ desc = "Live grep" }))
+map("n", "<Space>fb", function()
+	builtin.buffers()
+end, opts({ desc = "Buffers" }))
+map("n", "<Space>fh", function()
+	builtin.help_tags()
+end, opts({ desc = "Help tags" }))
+map("n", "<Space>fo", function()
+	builtin.git_files()
+end, opts({ desc = "Git files" }))
 
 -- <Tab>: 補完メニュー表示中なら次候補、直前が空白/行頭ならタブ、それ以外は ddc の手動補完
 map("i", "<Tab>", function()
@@ -191,14 +213,6 @@ map("i", "<S-Tab>", function()
 	end
 end, { expr = true, silent = true })
 
-map("i", "<CR>", function()
-	if fn["ddc#visible"]() == true then
-		return fn["ddc#map#confirm"]
-	else
-		return "\r"
-	end
-end, { expr = true, silent = true })
--- autopairs
 local ok_pairs, npairs = pcall(require, "nvim-autopairs")
 if ok_pairs and ok then
 	map.set("i", "<CR>", function()
