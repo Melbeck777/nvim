@@ -28,19 +28,19 @@ end
 -- Leader mappings
 map("n", "<Space>tt", function()
 	load_then("toggleterm.nvim", function()
-		open_new_term("float") -- ← vim.cmd は不要
+		open_new_term("float")
 	end)
 end, opts({ desc = "Toggle terminal" }))
 
 map("n", "<Space>tv", function()
-	load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
-		open_new_term("vertical") -- ← vim.cmd は不要
+	load_then("toggleterm.nvim", function()
+		open_new_term("vertical")
 	end)
 end, opts({ desc = "Terminal Vertical" }))
 
 map("n", "<Space>th", function()
-	load_then("toggleterm.nvim", function() -- ← repo ではなく "toggleterm.nvim"
-		open_new_term("horizontal") -- ← vim.cmd は不要
+	load_then("toggleterm.nvim", function()
+		open_new_term("horizontal")
 	end)
 end, opts({ desc = "Terminal Horizontal" }))
 
@@ -61,30 +61,32 @@ map("n", "<Space>gD", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", opts({ desc = "Diffv
 map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview: file history (%)" }))
 map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
 
--- LSP 共通（LspAttach でバッファローカルに張る）
-api("LspAttach", {
-	callback = function(args)
-		local bufnr = args.buf
-		local bmap = function(mode, lhs, rhs, desc)
-			map(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = desc })
-		end
-		bmap("n", "gd", vim.lsp.buf.definition, "Goto Definition")
-		bmap("n", "gr", vim.lsp.buf.references, "References")
-		bmap("n", "K", vim.lsp.buf.hover, "Hover")
-		bmap("n", "<Space>rn", vim.lsp.buf.rename, "Rename")
-		bmap("n", "<Space>ca", vim.lsp.buf.code_action, "Code Action")
-		bmap("n", "<Space>fd", function()
-			vim.lsp.buf.format({ async = true })
-		end, "Format")
-	end,
-})
+map("n", "gD", vim.lsp.buf.declaration, opts({ buffer = true }))
+map("n", "gd", vim.lsp.buf.definition, opts({ buffer = true }))
+map("n", "K", vim.lsp.buf.hover, opts({ buffer = true }))
+map("n", "gi", vim.lsp.buf.implementation, opts({ buffer = true }))
+map("n", "<C-k>", vim.lsp.buf.signature_help, opts({ buffer = true }))
+map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts({ buffer = true }))
+map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts({ buffer = true }))
+map("n", "<leader>wl", function()
+	print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+end, opts({ buffer = true }))
+map("n", "<leader>D", vim.lsp.buf.type_definition, opts({ buffer = true }))
+map("n", "<leader>rn", vim.lsp.buf.rename, opts({ buffer = true }))
+map("n", "<leader>ca", vim.lsp.buf.code_action, opts({ buffer = true }))
+map("n", "gr", vim.lsp.buf.references, opts({ buffer = true }))
+map("n", "<leader>e", vim.diagnostic.open_float, opts({ buffer = true }))
+map("n", "[d", vim.diagnostic.goto_prev, opts({ buffer = true }))
+map("n", "]d", vim.diagnostic.goto_next, opts({ buffer = true }))
+map("n", "<leader>q", vim.diagnostic.setloclist, opts({ buffer = true }))
+
 local function bmap(bufnr, mode, lhs, rhs, opt)
 	opt = opt or {}
 	opt.buffer = bufnr
-	map(mode, lhs, rhs, opt)
+	map.set(mode, lhs, rhs, opt)
 end
 
--- Autolist
+-- insertmode
 api("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
@@ -158,32 +160,48 @@ api("FileType", {
 	end,
 })
 
-local builtin = require("telescope.builtin")
-local tcfg = require("config.telescope")
+local fn = vim.fn
+-- 直前が空白（または行頭）かどうか
+local function has_words_before()
+	local line, col = unpack(api.nvim_win_get_cursor(0))
+	if col == 0 then
+		return true
+	end
+	local c = api.nvim_get_current_line():sub(col, col)
+	return c:match("%s") ~= nil
+end
 
-map("n", "<Space>ff", function()
-	builtin.find_files()
-end, opts({ desc = "Find files" }))
-map("n", "<Space>fg", function()
-	builtin.live_grep({
-		additional_args = function(_)
-			return tcfg.rg_args_flat({ pcre = true })
-		end,
-	})
-end, opts({ desc = "Live grep" }))
-map("n", "<Space>fb", function()
-	builtin.buffers()
-end, opts({ desc = "Buffers" }))
-map("n", "<Space>fh", function()
-	builtin.help_tags()
-end, opts({ desc = "Help tags" }))
-map("n", "<Space>fo", function()
-	builtin.git_files()
-end, opts({ desc = "Git files" }))
+-- <Tab>: 補完メニュー表示中なら次候補、直前が空白/行頭ならタブ、それ以外は ddc の手動補完
+map("i", "<Tab>", function()
+	if fn.pumvisible() == 1 then
+		return "<C-n>"
+	elseif has_words_before() then
+		return "<Tab>"
+	else
+		return fn["ddc#map#manual_complete"]()
+	end
+end, { expr = true, silent = true })
 
+-- <S-Tab>: 補完メニュー表示中なら前候補、そうでなければバックスペース相当
+map("i", "<S-Tab>", function()
+	if fn.pumvisible() == 1 then
+		return "<C-p>"
+	else
+		return "<C-h>"
+	end
+end, { expr = true, silent = true })
+
+map("i", "<CR>", function()
+	if fn["ddc#visible"]() == true then
+		return fn["ddc#map#confirm"]
+	else
+		return "\r"
+	end
+end, { expr = true, silent = true })
+-- autopairs
 local ok_pairs, npairs = pcall(require, "nvim-autopairs")
 if ok_pairs and ok then
-	map("i", "<CR>", function()
+	map.set("i", "<CR>", function()
 		local res = autolist.new()
 		if res ~= "<CR>" then
 			return res

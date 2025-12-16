@@ -1,134 +1,74 @@
 -- lua/plugins/lspconfig.lua
 return {
-    { "williamboman/mason.nvim",          build = ":MasonUpdate" },
-    { "neovim/nvim-lspconfig" },
-    { "williamboman/mason-lspconfig.nvim" },
-    { "hrsh7th/cmp-nvim-lsp" },
-
+    { "williamboman/mason.nvim", build = ":MasonUpdate", config = true },
     {
-        "nvim-lua/plenary.nvim",
-        event = "VeryLazy",
+        "williamboman/mason-lspconfig.nvim",
         config = function()
-            -- 0.11+ の新APIが使えるかチェック（簡素化）
-            local has_new = (vim.fn.has("nvim-0.11") == 1) and type(vim.lsp.start) == "function"
-            if not has_new then
-                vim.notify("Neovim 0.11+ が必要です（新LSP API）。", vim.log.levels.ERROR)
-                return
-            end
-            -- mason
-            local ok_mason, mason = pcall(require, "mason")
-            if not ok_mason then return end
-            mason.setup()
-
-            -- mason-lspconfig
-            local ok_mlsp, mlsp = pcall(require, "mason-lspconfig")
-            if not ok_mlsp then return end
-            mlsp.setup({
+            require("mason-lspconfig").setup({
                 ensure_installed = {
-                    "lua_ls",
-                    "ts_ls",
-                    "jsonls",
                     "clangd",
-                    "cmake",
-                    "dockerls",
-                    "docker_compose_language_service",
-                    "gopls",
+                    "lua_ls",
+                    "ts_ls", -- 修正: "ts_ls" はNG
                     "jsonls",
-                    "marksman",
                     "html",
                     "cssls",
                     "pyright",
+                    "gopls",
                     "jdtls",
                     "kotlin_language_server",
                 },
                 automatic_installation = true,
             })
+        end,
+    },
+    {
+        "neovim/nvim-lspconfig",
+        dependencies = {
+            "Shougo/ddc.vim",
+            { "uga-rosa/ddc-nvim-lsp-setup", lazy = false }, -- 追加
+        },
+        config = function()
+            local ok, ddc_cap = pcall(require, "ddc_nvim_lsp_setup")
+            local capabilities = ok and ddc_cap.make_client_capabilities()
+                or vim.lsp.protocol.make_client_capabilities()
+            --local capabilities = require("ddc_nvim_lsp_setup").make_client_capabilities()
 
-            -- 旧 lspconfig の“設定定義”は参照だけに使う（root_dir などの既定取得）
-            --local ok_lsp, _ = pcall(require, "lspconfig")
-            --if not ok_lsp then return end
-
-            -- capabilities（nvim-cmp 連携）
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            local ok_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
-            if ok_cmp then
-                capabilities = cmp_lsp.default_capabilities(capabilities)
-            end
-
-            -- on_attach（キーマップは貼らない）
-            local on_attach = function(client, bufnr)
-                vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-            end
-
-            -- サーバ個別設定
-            local servers = {
-                lua_ls = {
-                    settings = {
-                        Lua = {
-                            diagnostics = { globals = { "vim" } },
-                            workspace = { checkThirdParty = false },
-                            telemetry = { enable = false },
-                        },
-                    },
-                },
-                clangd = {
-                    cmd = {
-                        "clangd",
-                        "--background-index",
-                        "--clang-tidy",
-                        "--query-driver=C:/Users/molmi/pg/mingw64/bin/g++.exe",
-                    },
-                },
-                ts_ls = {},
-                jsonls = {},
-                html = {},
-                cssls = {},
-                pyright = {},
-            }
-
-
-            local function start(server_name, user_cfg)
-                local ok_lsp, lspconfig = pcall(require, "lspconfig")
-                if not ok_lsp then return end
-
-                -- ts_ls → tsserver など、lspconfig名とのマッピング
-                local server_alias = {
-                    ts_ls = "tsserver",
-                }
-                local target_name = server_alias[server_name] or server_name
-
-                -- lspconfig[target_name] から default_config を取得
-                local defaults = {}
-                if lspconfig[target_name] and lspconfig[target_name].document_config then
-                    defaults = lspconfig[target_name].document_config.default_config or {}
-                end
-
-                local cfg = vim.tbl_deep_extend("force", defaults, user_cfg or {})
-                cfg.on_attach = cfg.on_attach or on_attach
-                cfg.capabilities = vim.tbl_deep_extend("force", capabilities, cfg.capabilities or {})
-
-                if not cfg.cmd then
-                    vim.notify(("LSP '%s' の cmd が見つかりません。Mason でインストール済みか確認してください。"):format(target_name),
-                        vim.log.levels.ERROR)
-                    return
-                end
-
-                vim.lsp.start(cfg)
-            end
-
-            -- mason-lspconfig のハンドラで一括起動
-            mlsp.setup({
-                function(server_name)
-                    start(server_name, servers[server_name])
-                end,
-            })
-
-            -- 診断表示の調整
+            -- 診断UIはここで
             vim.diagnostic.config({
                 virtual_text = { spacing = 2, prefix = "●" },
                 float = { border = "rounded" },
                 severity_sort = true,
+                signs = true,
             })
+
+            -- LspAttach で keymap.lua に委譲（バッファローカル）
+            vim.api.nvim_create_autocmd("LspAttach", {
+                group = vim.api.nvim_create_augroup("UserLspKeymaps", { clear = true }),
+                callback = function(args)
+                    pcall(require, "keymap") -- 存在しない場合でも落ちないように
+                    if package.loaded["keymap"] then
+                        require("keymap").lsp_on_attach(args.buf)
+                    end
+                end,
+            })
+
+            -- インストール済みを一括 setup（個別差分は必要時に分岐）
+            --            local servers = require("mason-lspconfig").get_installed_servers()
+            --            for _, server_name in ipairs(servers) do
+            --                local conf = { capabilities = capabilities }
+            --                if server_name == "lua_ls" then
+            --                    conf.settings = {
+            --                        Lua = {
+            --                            runtime = { version = "LuaJIT" },
+            --                            diagnostics = { globals = { "vim" } },
+            --                            workspace = { checkThirdParty = false },
+            --                            telemetry = { enable = false },
+            --                        },
+            --                    }
+            --                end
+            --                print(server_name, vim.lsp[server_name], conf)
+            --                vim.lsp[server_name].setup(conf)
+            --            end
         end,
     },
 }

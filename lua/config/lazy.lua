@@ -16,16 +16,9 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	spec = {
+		{ import = "plugins.nvim-tree.lua", enabled = false },
 		{ import = "plugins" },
 	},
-	install = { colorscheme = { "habmax" } },
-	checker = { enablede = true },
-	performance = {
-		rtp = {
-			import = "plugins",
-			disabled_plugins = {
-				"nvim-tree",
-			},
-		},
-	},
+	install = { colorscheme = { "tokyonight", "habmax" } },
+	checker = { enabled = false },
 })

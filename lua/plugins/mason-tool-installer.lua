@@ -1,3 +1,4 @@
+--lua/plugins/mason-tool-instraller.lua
 return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     event = "VeryLazy",
