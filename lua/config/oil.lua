@@ -11,6 +11,7 @@ function M.opts()
 			-- "permissions",
 			-- "size",
 			-- "mtime",
+			"git_status",
 		},
 		-- Buffer-local options to use for oil buffers
 		buf_options = {
@@ -65,7 +66,7 @@ function M.opts()
 			["<C-s>"] = { "actions.select", opts = { vertical = true } },
 			["<C-h>"] = { "actions.select", opts = { horizontal = true } },
 			["<C-t>"] = { "actions.select", opts = { tab = true } },
-			["<C-p>"] = "actions.preview",
+			["<C-p>"] = { "actions.preview", opts = { vertical = true, split = "botright" } },
 			["<C-c>"] = { "actions.close", mode = "n" },
 			["<C-l>"] = "actions.refresh",
 			["-"] = { "actions.parent", mode = "n" },
@@ -115,9 +116,6 @@ function M.opts()
 		-- EXPERIMENTAL support for performing file operations with git
 		git = {
 			-- Return true to automatically git add/mv/rm files
-			add = function(path)
-				return false
-			end,
 			mv = function(src_path, dest_path)
 				return false
 			end,
