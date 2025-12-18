@@ -225,4 +225,4 @@ if ok_pairs and ok then
 end
 
 -- find-cmdline
-vim.api.nvim_set_keymap("n", ":", "<cmd>FineCmdline<CR>", opts())
+vim.api.nvim_set_keymap("n", "<Space>:", "<cmd>FineCmdline<CR>", opts())

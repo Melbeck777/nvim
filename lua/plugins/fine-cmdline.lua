@@ -11,7 +11,7 @@ return {
 					text = { top = " Cmdline ", top_align = "left" },
 				},
 				win_options = {
-					winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+					winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder",
 				},
 			},
 		})
