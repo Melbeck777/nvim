@@ -8,6 +8,7 @@ return {
 		on_highlights = function(h1, c)
 			h1.WinSeparator = { fg = "#3b4261", bg = "NONE" }
 			h1.FloatBorder = { fg = "#3b4261", bg = c.bg }
+			h1.NormalFloat = { fg = c.fg, bg = c.bg_dark }
 		end,
 		transparent = true,
 		terminal_colors = true,
