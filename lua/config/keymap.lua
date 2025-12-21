@@ -25,7 +25,7 @@ local function open_new_term(direction)
 	term:open()
 end
 
--- Leader mappings
+-- toggleterm setting
 map("n", "<Space>tt", function()
 	load_then("toggleterm.nvim", function()
 		open_new_term("float")
@@ -43,16 +43,19 @@ map("n", "<Space>th", function()
 		open_new_term("horizontal")
 	end)
 end, opts({ desc = "Terminal Horizontal" }))
+map("t", "<esc>", [[<C-\><C-n>]], opts())
 
 -- Move buffer
 map("n", "<C-j>", "<C-w>j", opts())
 map("n", "<C-h>", "<C-w>h", opts())
 map("n", "<C-l>", "<C-w>l", opts())
 map("n", "<C-k>", "<C-w>k", opts())
--- 端末バッファから抜ける
-map("t", "<esc>", [[<C-\><C-n>]], opts())
 
--- git setting
+-- fuzzy-motion
+map("n", "gs", "<cmd>FuzzyMotion<CR>", opts())
+map("x", "gs", "<cmd>FuzzyMotion<CR>", opts())
+
+-- lazy git
 map("n", "<leader>g", ":LazyGit<CR>", opts())
 
 -- diffの表示
@@ -61,6 +64,7 @@ map("n", "<Space>gD", "<cmd>DiffviewOpen HEAD~1..HEAD<cr>", opts({ desc = "Diffv
 map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview: file history (%)" }))
 map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
 
+-- lsp
 map("n", "gD", vim.lsp.buf.declaration, opts({ buffer = true }))
 map("n", "gd", vim.lsp.buf.definition, opts({ buffer = true }))
 map("n", "K", vim.lsp.buf.hover, opts({ buffer = true }))
@@ -83,7 +87,7 @@ map("n", "<leader>q", vim.diagnostic.setloclist, opts({ buffer = true }))
 local function bmap(bufnr, mode, lhs, rhs, opt)
 	opt = opt or {}
 	opt.buffer = bufnr
-	map.set(mode, lhs, rhs, opt)
+	map(mode, lhs, rhs, opt)
 end
 
 -- insertmode
@@ -161,7 +165,6 @@ api("FileType", {
 })
 
 local fn = vim.fn
--- 直前が空白（または行頭）かどうか
 local function has_words_before()
 	local line, col = unpack(api.nvim_win_get_cursor(0))
 	if col == 0 then
@@ -193,7 +196,6 @@ map("n", "<Space>fo", function()
 	builtin.git_files()
 end, opts({ desc = "Git files" }))
 
--- <Tab>: 補完メニュー表示中なら次候補、直前が空白/行頭ならタブ、それ以外は ddc の手動補完
 map("i", "<Tab>", function()
 	if fn.pumvisible() == 1 then
 		return "<C-n>"
@@ -204,7 +206,6 @@ map("i", "<Tab>", function()
 	end
 end, { expr = true, silent = true })
 
--- <S-Tab>: 補完メニュー表示中なら前候補、そうでなければバックスペース相当
 map("i", "<S-Tab>", function()
 	if fn.pumvisible() == 1 then
 		return "<C-p>"
@@ -226,3 +227,6 @@ end
 
 -- find-cmdline
 vim.api.nvim_set_keymap("n", "<Space>:", "<cmd>FineCmdline<CR>", opts())
+
+-- vim-kensaku
+map("c", "<CR>", "<Plug>(kensaku-search-replace)<CR>", { noremap = false, silent = true })
