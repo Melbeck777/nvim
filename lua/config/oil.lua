@@ -74,7 +74,7 @@ function M.opts()
 			["`"] = { "actions.cd", mode = "n" },
 			["~"] = { "actions.cd", opts = { scope = "tab" }, mode = "n" },
 			["gs"] = { "actions.change_sort", mode = "n" },
-			["gx"] = "actions.open_external",
+			["ga"] = "actions.open_external",
 			["g."] = { "actions.toggle_hidden", mode = "n" },
 			["g\\"] = { "actions.toggle_trash", mode = "n" },
 		},
