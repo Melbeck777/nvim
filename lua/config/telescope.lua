@@ -1,4 +1,4 @@
--- %LOCALAPPDATA%/nvim/lua/config/telescope.luatelm
+-- %LOCALAPPDATA%/nvim/lua/config/telescope.lua
 local M = {}
 
 -- 共通の除外定義

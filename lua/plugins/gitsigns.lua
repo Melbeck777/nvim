@@ -12,10 +12,9 @@ return {
 				topdelete = { text = "‾" },
 				changedelete = { text = "~" },
 			},
-			current_line_blame = false, -- true にすると行ブレイム常時表示
+			current_line_blame = false,
 		},
 	},
-	-- git-blame（軽量なインライン blame）
 	{
 		"f-person/git-blame.nvim",
 		event = { "BufReadPre", "BufNewFile" },
