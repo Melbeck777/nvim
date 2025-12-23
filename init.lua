@@ -67,6 +67,9 @@ opt.laststatus = 3
 -- quickfix への取り込み形式: file:line:message
 opt.showtabline = 2
 
+vim.keymap.set("n", "s", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("x", "s", "<Nop>", { noremap = true, silent = true })
+
 -- フォーカスを変更する
 local termfeatures = vim.g.termfeatures or {}
 termfeatures.osc52 = true
