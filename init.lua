@@ -2,9 +2,13 @@
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
+local is_win = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+local is_mac = vim.fn.has("macunix") == 1
+local is_linux = not is_win and not is_mac
+
 --windows で :terminalをPowershellにする
 local opt = vim.opt
-if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+if is_win then
 	local pwsh = vim.fn.executable("pwsh") == 1 and "pwsh" or nil
 	local pscore = vim.fn.executable("powershell") == 1 and "powershell"
 	local shell = pwsh
@@ -16,6 +20,21 @@ if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
 		opt.shellquote = ""
 		opt.shellxquote = ""
 	end
+else
+	opt.shellquote = ""
+	opt.shellxquote = ""
+end
+
+if vim.fn.executable("rg") == 1 then
+	opt.grepprg = "rg --vimgrep"
+	opt.grepformat = "%f:%l:%c:%m"
+else
+	if is_win then
+		opt.grepprg = "findstr /S /N /R /I /C:%s ."
+	else
+		opt.grepprg = "grep -RIn --exclude-dir=.git --exclude-dire=node_modules --line-number %s ."
+	end
+	opt.grepformat = "%f:%;"
 end
 
 --マウス有効化
@@ -57,8 +76,6 @@ opt.fileformats = { "dos", "unix", "mac" }
 opt.helplang = { "ja", "en" }
 
 opt.updatetime = 300
-opt.grepprg = "findstr /S /N /R /I /C:%s ."
-opt.grepformat = "%f:%l:%m"
 
 opt.pumblend = 0
 opt.winblend = 0
