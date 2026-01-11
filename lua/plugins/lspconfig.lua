@@ -16,6 +16,7 @@ return {
 					"gopls",
 					"jdtls",
 					"kotlin_language_server",
+					"typos_lsp",
 				},
 				automatic_installation = true,
 			})
