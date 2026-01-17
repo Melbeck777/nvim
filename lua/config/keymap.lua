@@ -1,6 +1,7 @@
 -- lua/config/keymap.lua
 local map = vim.keymap.set
-local api = vim.api.nvim_create_autocmd
+local autocmd = vim.api.nvim_create_autocmd
+local api = vim.api
 local function load_then(names, fn)
 	local list = type(names) == "string" and { names } or names
 	pcall(function()
@@ -65,11 +66,16 @@ map("n", "<Space>gh", "<cmd>DiffviewFileHistory %<cr>", opts({ desc = "Diffview:
 map("n", "<Space>gq", "<cmd>DiffviewClose<cr>", opts({ desc = "Diffview: close" }))
 
 -- lsp
-map("n", "gD", vim.lsp.buf.declaration, opts({ buffer = true }))
-map("n", "gd", vim.lsp.buf.definition, opts({ buffer = true }))
-map("n", "K", vim.lsp.buf.hover, opts({ buffer = true }))
-map("n", "gi", vim.lsp.buf.implementation, opts({ buffer = true }))
-map("n", "<C-k>", vim.lsp.buf.signature_help, opts({ buffer = true }))
+autocmd("LspAttach", {
+	callback = function(ev)
+		local lsp_opts = opts({ buffer = ev.buf })
+		map("n", "gD", vim.lsp.buf.declaration, lsp_opts)
+		map("n", "gd", vim.lsp.buf.definition, lsp_opts)
+		map("n", "K", vim.lsp.buf.hover, lsp_opts)
+		map("n", "gi", vim.lsp.buf.implementation, lsp_opts)
+		map("n", "<C-K>", vim.lsp.buf.signature_help, lsp_opts)
+	end,
+})
 map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts({ buffer = true }))
 map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts({ buffer = true }))
 map("n", "<leader>wl", function()
@@ -91,7 +97,7 @@ local function bmap(bufnr, mode, lhs, rhs, opt)
 end
 
 -- insertmode
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -99,7 +105,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -107,7 +113,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -115,7 +121,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -124,7 +130,7 @@ api("FileType", {
 })
 
 -- normalmode
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -132,7 +138,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -140,7 +146,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -148,7 +154,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -156,7 +162,7 @@ api("FileType", {
 	end,
 })
 
-api("FileType", {
+autocmd("FileType", {
 	pattern = { "markdown", "text", "norg" },
 	callback = function(args)
 		local bufnr = args.buf
@@ -226,7 +232,7 @@ if ok_pairs and ok then
 end
 
 -- find-cmdline
-vim.api.nvim_set_keymap("n", "<Space>:", "<cmd>FineCmdline<CR>", opts())
+api.nvim_set_keymap("n", "<Space>:", "<cmd>FineCmdline<CR>", opts())
 
 -- vim-kensaku
 map("c", "<CR>", "<Plug>(kensaku-search-replace)<CR>", { noremap = false, silent = true })
