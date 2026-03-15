@@ -13,7 +13,7 @@ local ignore_dirs = {
 	"target/",
 }
 local ignore_files = { "yarn.lock", "pnpm-lock.yaml" }
-local ignore_exts = { "png", "jpg", "jpeg", "gif", "webp", "mp4", "mov" }
+local ignore_exts = { "png", "jpg", "jpeg", "gif", "webp", "mp4", "mov", "exe", "dll", "bin", "zip", "7z", "tar", "gz" }
 
 -- ripgrep に渡す --glob 除外
 local function rg_globs()
@@ -51,11 +51,11 @@ end
 -- find_files 用コマンド
 local function make_find_command()
 	if vim.fn.executable("rg") == 1 then
-		local cmd = { "rg", "--files", "--hidden", "--follow", "--ignore-vcs" }
+		local cmd = { "rg", "--files", "--hidden", "--follow", "--no-ignore" }
 		vim.list_extend(cmd, rg_globs())
 		return cmd
 	elseif vim.fn.executable("fd") == 1 then
-		local cmd = { "fd", "--type", "f", "--hidden", "--follow", "--color", "never" }
+		local cmd = { "fd", "--type", "f", "--hidden", "--follow", "--no-ignore", "--color", "never" }
 		vim.list_extend(cmd, fd_excludes())
 		return cmd
 	end
@@ -64,7 +64,7 @@ end
 
 function M.rg_args_flat(opts)
 	opts = opts or {}
-	local base = opts.pcre and { "-P", "-S", "--hidden" } or { "-F", "-S", "--hidden" }
+	local base = opts.pcre and { "-P", "-S", "--hidden", "--no-ignore" } or { "-F", "-S", "--hidden", "--no-ignore" }
 	if vim.fn.executable("rg") == 1 then
 		vim.list_extend(base, rg_globs())
 	else
@@ -89,7 +89,7 @@ function M.opts()
 		pickers = {
 			find_files = {
 				hidden = true,
-				no_ignore = false,
+				no_ignore = true,
 				find_command = make_find_command(),
 			},
 			live_grep = {
